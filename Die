@@ -1,0 +1,30 @@
+package ModernLudo;
+
+/**
+ *
+ * @author max
+ */
+
+
+public class Die {
+	
+	private int sideUp;
+	private int numSides;
+	
+	public Die() {
+		numSides = 6;
+		roll();
+	}
+	
+	public int getNumSides() {
+		return numSides;
+	}
+	
+	public int getSideUp() {
+		return sideUp;
+	}
+	
+	public void roll() {
+		sideUp = (int)(Math.random()*numSides) + 1;
+	}
+}
