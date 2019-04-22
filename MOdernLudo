@@ -1,0 +1,17 @@
+package ModernLudo;
+
+/**
+ *
+ * @author max
+ */
+
+
+public class ModernLudo {
+
+	public static void main(String[] args) {
+		CUIGame game = new CUIGame();
+		game.showWelcome();
+		game.play();
+	}
+
+}
