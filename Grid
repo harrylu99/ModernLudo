@@ -1,0 +1,93 @@
+package ModernLudo;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
+/**
+ *
+ * @author max
+ */
+public class Grid {
+	protected Color borderColor = Color.black;
+	protected Color color;
+	protected int id;
+	protected int x,y;
+	protected int width, height;
+	protected String name = "";
+	protected Player player;
+	
+	/**
+	 * Create a new grid
+	 */
+	public Grid(int id, Color color, int x, int y, int width, int height) {
+		this.color = color;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
+	
+	
+	public void setBorderColor(Color borderColor) {
+		this.borderColor = borderColor;
+	}
+	
+	
+	public void draw(Graphics graphics) {
+		if(player != null) {
+			graphics.setColor(player.getColor());
+		}else {
+			graphics.setColor(color);
+		}
+		
+		graphics.fillRect(x, y, width, height);
+		
+		graphics.setColor(borderColor);
+		graphics.drawRect(x+1, y+1, width, height);
+		
+		graphics.setColor(Color.black);
+		graphics.drawString(name, x+10, y+20);
+	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	public int getHeight() {
+		return height;
+	}
+	public int getY() {
+		return y;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void playerArrive(Player player) {
+		if(this.player != null) {
+			this.player.reset();
+		}
+		this.player = player;
+	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+	
+	public void playerLeave() {
+		this.player = null;
+	}
+
+	public void action(Player player) {
+		//standard grid do nothing
+	}
+
+	public String getName() {
+		return name;
+	}
+}
