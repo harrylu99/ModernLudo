@@ -1,0 +1,160 @@
+package ModernLudo;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author max
+ */
+public class Player {
+	private int id;
+	private String name;
+	private Color color;
+	public int steps = 0;
+	private int position = 0;
+	private List<Grid> path = new ArrayList<>();
+	private boolean computer = false;
+	private Player nextPlayer;
+	
+	//for special grid action
+	private boolean doubleDie = false;
+	private boolean stopDie = false;
+	
+	public Player(int id, String name, Color color, List<Grid> path) {
+		this.id = id;
+		this.name = name;
+		this.color = color;
+		this.path = path;
+		path.get(0).playerArrive(this);
+	}
+	
+	public int getPosition() {
+		return position+1;
+	}
+	
+	public List<Grid> getPath() {
+		return path;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public Grid getStartGrid() {
+		return path.get(0);
+	}
+	
+	public boolean win() {
+		return position == path.size()-1;
+	}
+	
+
+	public void moveBack(int step) {
+		System.out.println(name + " move back by " + step + " steps.");
+		path.get(position).playerLeave();
+
+		int beyond = step;
+		while(beyond > 0) {
+			position--;
+			beyond--;
+		}
+		if(position < 0) {
+			position = 0;
+		}
+		
+		Grid grid = path.get(position);
+		grid.playerArrive(this);
+		//System.out.println(name + " " + grid.getClass().getSimpleName() + " " + position + " of " + path.size());
+		grid.action(this);
+	}
+
+
+	public void reset() {
+		path.get(position).playerLeave();
+		position = 0;
+		path.get(position).playerArrive(this);
+	}
+
+	
+	public void move(int step) {
+		step++;
+		
+		if(position == 0) {
+			if(step == 6) {
+				step = 1;
+				System.out.println(name + " succeeded to got 6, start to move.");
+			}else {
+				System.out.println(name + " failed to got 6, so still stands on the start point.");
+				return;
+			}
+		}
+		
+		System.out.println(name + " move " + step + " steps");
+		
+		path.get(position).playerLeave();
+		
+		position += step;
+		int beyond = position - (path.size()-1);
+		beyond *= 2;
+		while(beyond > 0) {
+			position--;
+			beyond--;
+		}
+		
+		
+		Grid grid = path.get(position);
+		//System.out.println(name + " " + grid.getClass().getSimpleName() + " " + position + " of " + path.size());
+		grid.playerArrive(this);
+		grid.action(this);
+	}
+	
+	public void setNextPlayer(Player nextPlayer) {
+		this.nextPlayer = nextPlayer;
+	}
+	
+	public Player getNextPlayer() {
+		return nextPlayer;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setComputer() {
+		this.computer = true;
+	}
+	
+	public boolean isComputer() {
+		return computer;
+	}
+	
+	public void setPosition(int position) {
+		this.position = position;
+	}
+	
+	public void setDoubleDie(boolean doubleDie) {
+		this.doubleDie = doubleDie;
+	}
+	
+	public void setStopDie(boolean stopDie) {
+		this.stopDie = stopDie;
+	}
+	
+	public boolean isDoubleDie() {
+		return doubleDie;
+	}
+	
+	public boolean isStopDie() {
+		return stopDie;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+}
