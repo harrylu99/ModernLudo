@@ -1,0 +1,20 @@
+package ModernLudo;
+import java.awt.Color;
+
+/**
+ *
+ * @author max
+ */
+public class GridDoubleDie extends Grid {
+	
+	public GridDoubleDie(Grid grid) {
+		super(grid.id, Color.YELLOW, grid.x, grid.y, grid.width, grid.height);
+		name = "Double Die";
+	}
+
+	@Override
+	public void action(Player player) {
+		super.action(player);
+		player.getNextPlayer().setDoubleDie(true);
+	}
+}
