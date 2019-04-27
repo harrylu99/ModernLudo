@@ -1,0 +1,20 @@
+package ModernLudo;
+import java.awt.Color;
+
+/**
+ *
+ * @author max
+ */
+public class GridForwardSix extends Grid {
+	
+	public GridForwardSix(Grid grid) {
+		super(grid.id, Color.YELLOW, grid.x, grid.y, grid.width, grid.height);
+		name = "Back Six";
+	}
+
+	@Override
+	public void action(Player player) {
+		super.action(player);
+		player.moveBack(6);
+	}
+}
