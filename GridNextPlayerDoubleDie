@@ -1,0 +1,14 @@
+public class GridNextPlayerDoubleDie extends Grid {
+	
+	public GridNextPlayerDoubleDie(Grid grid) {
+		super(grid.id, Color.YELLOW, grid.x, grid.y, grid.width, grid.height);
+		name = "Stop Die";
+	}
+
+	@Override
+	public void action(Player player) {
+		super.action(player);
+		player.setDoubleDie(true);
+	}
+}
+
