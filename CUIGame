@@ -1,0 +1,375 @@
+public class CUIGame {
+
+	private Die die = new Die();
+	private Player[] players = new Player[4];
+	private List<Grid> grids = new ArrayList<>();
+	private int areax, areay;
+	private int currentPlayer = 0;
+	private String lblDie;
+	private String lblTitle;
+
+	public CUIGame() {
+		initGrids();
+	}
+
+	private void initGrids() {
+		areax = 100;
+		areay = 270;
+
+		int gridWidth = 80;
+		int gridHeight = 40;
+
+		int sideLength = 9;
+		int index = 0;
+		int x = areax;
+		int y = areay;
+		for (int i = 0; i < sideLength; i++) {
+			Grid grid = new Grid(index++, Color.WHITE, x, y, gridWidth, gridHeight);
+			grids.add(grid);
+			x += gridWidth;
+		}
+		for (int i = 0; i < sideLength; i++) {
+			Grid grid = new Grid(index++, Color.WHITE, x, y, gridWidth, gridHeight);
+			grids.add(grid);
+			y += gridHeight;
+		}
+		for (int i = 0; i < sideLength; i++) {
+			Grid grid = new Grid(index++, Color.WHITE, x, y, gridWidth, gridHeight);
+			grids.add(grid);
+			x -= gridWidth;
+		}
+		for (int i = 0; i < sideLength; i++) {
+			Grid grid = new Grid(index++, Color.WHITE, x, y, gridWidth, gridHeight);
+			grids.add(grid);
+			y -= gridHeight;
+		}
+
+		int slideLength2 = 3;
+
+		// 0
+		List<Grid> path0 = new ArrayList<>();
+		int startIndex = 0 * sideLength + sideLength / 2 + 1;
+		Grid player1Start = new Grid(201, Color.red, grids.get(startIndex).getX(),
+				grids.get(startIndex).getY() - gridHeight, gridWidth, gridHeight);
+		grids.add(player1Start);
+		path0.add(player1Start);
+		for (int i = 0; i < 4 * sideLength; i++) {
+			path0.add(grids.get(startIndex));
+			startIndex++;
+			startIndex %= 4 * sideLength;
+		}
+
+		x = player1Start.getX() - gridWidth;
+		y = player1Start.getY() + 2 * gridHeight;
+		for (int i = 0; i < slideLength2; i++) {
+			Grid grid = new Grid(index++, Color.WHITE, x, y, gridWidth, gridHeight);
+			grid.setBorderColor(Color.red);
+			path0.add(grid);
+			grids.add(grid);
+			y += gridHeight;
+		}
+		players[0] = new Player(1, "Player 1", Color.red, path0);
+
+		// 1
+		List<Grid> path1 = new ArrayList<>();
+		startIndex = 1 * sideLength + sideLength / 2 + 1;
+		Grid player2Start = new Grid(202, Color.blue, grids.get(startIndex).getX() + gridWidth,
+				grids.get(startIndex).getY(), gridWidth, gridHeight);
+		grids.add(player2Start);
+		path1.add(player2Start);
+		for (int i = 0; i < 4 * sideLength; i++) {
+			path1.add(grids.get(startIndex));
+			startIndex++;
+			startIndex %= 4 * sideLength;
+		}
+
+		x = player2Start.getX() - 2 * gridWidth;
+		y = player2Start.getY() - gridHeight;
+		for (int i = 0; i < slideLength2; i++) {
+			Grid grid = new Grid(index++, Color.WHITE, x, y, gridWidth, gridHeight);
+			grid.setBorderColor(Color.blue);
+			path1.add(grid);
+			grids.add(grid);
+			x -= gridWidth;
+		}
+		players[1] = new Player(2, "Player 2", Color.blue, path1);
+
+		// 2
+		List<Grid> path2 = new ArrayList<>();
+		startIndex = 2 * sideLength + sideLength / 2 + 1;
+		Grid player3Start = new Grid(203, Color.green, grids.get(startIndex).getX(),
+				grids.get(startIndex).getY() + gridHeight, gridWidth, gridHeight);
+		grids.add(player3Start);
+		path2.add(player3Start);
+		for (int i = 0; i < 4 * sideLength; i++) {
+			path2.add(grids.get(startIndex));
+			startIndex++;
+			startIndex %= 4 * sideLength;
+		}
+
+		x = player3Start.getX() + gridWidth;
+		y = player3Start.getY() - 2 * gridHeight;
+		for (int i = 0; i < slideLength2; i++) {
+			Grid grid = new Grid(index++, Color.WHITE, x, y, gridWidth, gridHeight);
+			grid.setBorderColor(Color.green);
+			grids.add(grid);
+			path2.add(grid);
+			y -= gridHeight;
+		}
+		players[2] = new Player(3, "Player 3", Color.green, path2);
+
+		// 3
+		List<Grid> path3 = new ArrayList<>();
+		startIndex = 3 * sideLength + sideLength / 2 + 1;
+		Grid player4Start = new Grid(204, Color.magenta, grids.get(startIndex).getX() - gridWidth,
+				grids.get(startIndex).getY(), gridWidth, gridHeight);
+		grids.add(player4Start);
+		path3.add(player4Start);
+		for (int i = 0; i < 4 * sideLength; i++) {
+			path3.add(grids.get(startIndex));
+			startIndex++;
+			startIndex %= 4 * sideLength;
+		}
+
+		x = player4Start.getX() + 2 * gridWidth;
+		y = player4Start.getY() + gridHeight;
+		for (int i = 0; i < slideLength2; i++) {
+			Grid grid = new Grid(index++, Color.WHITE, x, y, gridWidth, gridHeight);
+			grid.setBorderColor(Color.magenta);
+			grids.add(grid);
+			path3.add(grid);
+			x += gridWidth;
+		}
+		players[3] = new Player(4, "Player 4", Color.magenta, path3);
+
+		players[0].setNextPlayer(players[1]);
+		players[1].setNextPlayer(players[2]);
+		players[2].setNextPlayer(players[3]);
+		players[3].setNextPlayer(players[0]);
+		
+		int size = (int) (4 * sideLength / 3.0);
+		Grid old = null;
+		index = 0;
+		old = grids.get(index);
+		grids.set(index, new GridStopDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridBackSix(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridDoubleDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 3;
+		old = grids.get(index);
+		grids.set(index, new GridForwardSix(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridNextPlayerDoubleDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+
+		index = size - 1;
+		old = grids.get(index);
+		grids.set(index, new GridStopDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridBackSix(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridDoubleDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 3;
+		old = grids.get(index);
+		grids.set(index, new GridForwardSix(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridNextPlayerDoubleDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+
+		index = 2 * size - 1;
+		old = grids.get(index);
+		grids.set(index, new GridStopDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridBackSix(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridDoubleDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 3;
+		old = grids.get(index);
+		grids.set(index, new GridForwardSix(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridNextPlayerDoubleDie(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+
+		index += 2;
+		old = grids.get(index);
+		grids.set(index, new GridRestart(grids.get(index)));
+		updatePlayerGrid(old, grids.get(index));
+		
+		//printUsers();
+	}
+
+	private void updatePlayerGrid(Grid old, Grid grid) {
+		for (Player player : players) {
+			List<Grid> path = player.getPath();
+			for(int i=0;i<path.size();i++) {
+				if(path.get(i) == old) {
+					path.set(i, grid);
+				}
+			}
+		}
+	}
+
+	public void play() {
+		Scanner keyboard = new Scanner(System.in);
+		
+		if (!nameset) {
+			int humans = 1;
+			while (true) {
+				try {
+			
+					
+					System.out.print("how many human players?(1-4): ");
+					
+					int humanNumInteger = Integer.parseInt(keyboard.nextLine());
+					if (humanNumInteger >= 1 && humanNumInteger <= 4) {
+						humans = humanNumInteger;
+						break;
+					} else {
+						System.out.println("invalid input!!!");
+					}
+				} catch (Exception e) {
+					System.out.println("invalid input!!!");
+				}
+			}
+
+			int computers = 4 - humans;
+			int index = 0;
+			for (int i = 0; i < humans; i++) {
+				System.out.print("input the name of " + players[index].getName() + ": ");
+				String name = keyboard.nextLine();
+				players[index].setName(name);
+				index++;
+			}
+			for (int i = 0; i < computers; i++) {
+				players[index].setComputer();
+				players[index].setName("Computer " + (i + 1));
+				index++;
+			}
+			nameset = true;
+		} else {
+			for (Player player : players) {
+				player.reset();
+			}
+		}
+		
+		printUsers();
+
+		nextPlayer();
+	}
+
+	protected boolean nameset = false;
+
+
+	protected void diceRolled() {
+		if(!players[currentPlayer].isStopDie()) {
+			die.roll();
+			int step = die.getSideUp();
+			if (!players[currentPlayer].isComputer()) {
+				System.out.println(players[currentPlayer] + " rolled: " + step);
+			}else {
+				System.out.println(players[currentPlayer] + " rolled: " + step);
+			}
+			
+			players[currentPlayer].move(step);
+			if(players[currentPlayer].isDoubleDie()) {
+				System.out.println(players[currentPlayer] + " has a double chance to roll die.");
+				die.roll();
+				step = die.getSideUp();
+				if (!players[currentPlayer].isComputer()) {
+					System.out.println(players[currentPlayer] + " rolled: " + step);
+				}
+				players[currentPlayer].move(step);
+				players[currentPlayer].setDoubleDie(false);
+			}	
+		}else {
+			System.out.println(players[currentPlayer] + " has no chance to roll die in this round.");
+			players[currentPlayer].setStopDie(false);
+		}
+
+		currentPlayer++;
+		currentPlayer %= players.length;
+
+		printUsers();
+		
+		
+		if (!isWin()) {
+			nextPlayer();
+		} else {
+			play();
+		}
+	}
+
+	private void nextPlayer() {
+		Scanner keyboard = new Scanner(System.in);
+		
+		Player player = players[currentPlayer];
+		System.out.println("Now it's " + player.getName() + "'s turn.");
+
+		if (player.isComputer()) {
+			diceRolled();
+		}else {
+			lblTitle = player.getName() + ", press ENTER to roll your die: ";
+			System.out.println(lblTitle);
+			keyboard.nextLine();
+			diceRolled();
+		}
+	}
+
+	private boolean isWin() {
+		for (Player p : players) {
+			if (p.win()) {
+				FileUtil.save(p.getName() + " Steps: " + p.steps);
+				System.out.println("After " + p.steps + " steps, " + p.getName() + " Win!");
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void printUsers() {
+		for (Player player : players) {
+			System.out.println("[" + player.getName() + "]" + " at position " + player.getPosition() + " of " + 
+					player.getPath().size());
+		}
+		System.out.println();
+	}
+
+	public void showWelcome() {
+		System.out.println("**************Modern Ludo***************\n");
+
+		String message = FileUtil.readFileContents("rules.txt");
+		System.out.println(message);
+		System.out.println();
+		
+		System.out.println("**************Leading Board******************");
+		message = FileUtil.readFileContents2("history.txt");
+		if(message.trim().isEmpty()) {
+			message = "no winner now!";
+		}
+		System.out.println(message);
+		System.out.println();
+	}
+}
+
