@@ -1,0 +1,19 @@
+ The rules of the game 
+
+•	Each player has one single piece of chess. 
+•	The chessboard was grouped into three different parts: Preparation area, Formal area and Complete area. 
+•	Before the game start, every chess was set in the home place, where in the head of the Preparation area. Player needs to role a number bigger than 5 then the chess cloud be allowed to the Formal area. 
+•	There are six special places in the Formal area and they have different things happened to the player, which are
+
+1.	Stop for one term
+2.	Get another chances to role the dice
+3.	Make next player get two dice
+4.	Go ahead for six steps
+5.	Go down for six steps
+6.	Go back to the Preparation area and star again
+
+•	And if a player walks to the place where already have one player, the first player would be send back to the Preparation area and star again. 
+•	After each piece has finished the Formal area, it will enter the Complete  zone. 
+The completion zone will have 8 grids from the starting point to the end. The player must pull out the corresponding number to enter the airport.
+If the number of points is greater than the number of points required to enter the airport, Then you have to go back to the corresponding number of steps until you stop at the end. 
+•	First player who arrived the end is the winner. 
